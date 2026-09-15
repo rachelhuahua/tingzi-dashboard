@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tingzi-dashboard-v1';
+const CACHE_NAME = 'tingzi-dashboard-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -20,5 +20,31 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
+
+  const request = event.request;
+  const acceptsHtml = request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html');
+
+  if (acceptsHtml) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request).then(cached => {
+      const network = fetch(request).then(response => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+        return response;
+      });
+      return cached || network;
+    })
+  );
 });
