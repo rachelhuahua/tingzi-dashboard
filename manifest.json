@@ -1,0 +1,19 @@
+{
+  "name": "婷仔的私人生活小花园",
+  "short_name": "生活小花园",
+  "description": "婷仔的私人综合仪表盘",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff7fb",
+  "theme_color": "#ff8fc7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
